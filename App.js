@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import 'react-native-gesture-handler';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -6,10 +6,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from './Screens/HomeScreen';
 import DiceScreen from './Screens/DiceScreen';
 import NoteScreen from './Screens/NoteScreen';
-import { FontAwesome5, Foundation } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
+
 
 SplashScreen.preventAutoHideAsync();
 setTimeout(SplashScreen.hideAsync, 2000);
+
+const image = require('./assets/Background.png');
+//https://www.drivethrurpg.com/product/352522/Worlds-Without-Number-Art-Pack?src=newest Image is royalty free
 
 const Tab = createBottomTabNavigator();
 
@@ -27,7 +31,7 @@ export default function App() {
             } else if (route.name === 'Dice Roller') {
               iconName = 'dice-six';
             }
-            if (route.name === 'Add Note'){
+            if (route.name === 'Add Note') {
               iconName = 'plus-square'
             }
 
@@ -39,7 +43,7 @@ export default function App() {
       >
         <Tab.Screen name="Notes" component={HomeScreen} />
         <Tab.Screen name="Dice Roller" component={DiceScreen} />
-        <Tab.Screen name="Add Note" component={NoteScreen}/>
+        <Tab.Screen name="Add Note" component={NoteScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );

@@ -6,11 +6,15 @@ import {
     Text,
     View,
     TouchableWithoutFeedback,
-    Keyboard
+    Keyboard,
+    ImageBackground
 } from 'react-native';
 import { useState, useEffect } from "react";
 import { TextInput } from 'react-native-gesture-handler';
 import DropDownPicker from 'react-native-dropdown-picker';
+
+const image = require('../assets/Background.png');
+//https://www.drivethrurpg.com/product/352522/Worlds-Without-Number-Art-Pack?src=newest Image is royalty free
 
 
 
@@ -52,66 +56,65 @@ export default function DiceScreen() {
     }
 
     return (
-        <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
-        <View style={styles.container}>
-            <View style={styles.row}>
-                <View style={styles.inputContainer}>
-                    <TextInput
-                        style={styles.input}
-                        onChangeText={(text) => setRolls(text)}
-                        keyboardType='number-pad'
-                        placeholder='Number of Rolls'
-                        decimal={false}
-                    />
-                </View>
-                <View style={styles.dropDownContainer}>
-                    <DropDownPicker
-                        open={open}
-                        value={value}
-                        items={sides}
-                        setOpen={setOpen}
-                        setValue={setValue}
-                        setItems={setSides}
-                        placeholder='Die Type'
-                    />
-                </View>
-                <View style={styles.buttonContainer}>
-                    <Pressable
-                        style={styles.button}
-                        onPress={() => {
-                            DiceRoll(value, rolls);
-                            console.log(value, rolls)
-                        }}>
-                        <Text style={styles.buttonText}>Roll Dice</Text>
-                    </Pressable>
-                </View>
-            </View>
-            <View style={styles.totalContainer}>
-                {header && (
-                    <View style={styles.headerContainer}>
-                        <Text style={styles.headerText}>Total: {total}</Text>
+        <ImageBackground source={image} style={styles.backgroundImage}>
+                <View style={styles.container}>
+                    <View style={styles.row}>
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                style={styles.input}
+                                onChangeText={(text) => setRolls(text)}
+                                keyboardType='number-pad'
+                                placeholder='Number of Rolls'
+                                decimal={false}
+                            />
+                        </View>
+                        <View style={styles.dropDownContainer}>
+                            <DropDownPicker
+                                open={open}
+                                value={value}
+                                items={sides}
+                                setOpen={setOpen}
+                                setValue={setValue}
+                                setItems={setSides}
+                                placeholder='Die Type'
+                            />
+                        </View>
+                        <View style={styles.buttonContainer}>
+                            <Pressable
+                                style={styles.button}
+                                onPress={() => {
+                                    DiceRoll(value, rolls);
+                                }}>
+                                <Text style={styles.buttonText}>Roll Dice</Text>
+                            </Pressable>
+                        </View>
                     </View>
-                )}
-            </View>
-            <View style={styles.resultsContainer}>
-                {results.length > 0 && (
-                    <ScrollView
-                        contentContainerStyle={styles.scrollContainer}
-                        horizontal={false}
-                        showsVerticalScrollIndicator={false}
-                    >
-                        {results.map((roll, index) => (
-                            <View style={styles.rollContainer} key={index}>
-                                <Text style={styles.rollText}>
-                                    Roll {index + 1}: {roll}
-                                </Text>
+                    <View style={styles.totalContainer}>
+                        {header && (
+                            <View style={styles.headerContainer}>
+                                <Text style={styles.headerText}>Total: {total}</Text>
                             </View>
-                        ))}
-                    </ScrollView>
-                )}
-            </View>
-        </View>
-        </TouchableWithoutFeedback>
+                        )}
+                    </View>
+                    <View style={styles.resultsContainer}>
+                        {results.length > 0 && (
+                            <ScrollView
+                                contentContainerStyle={styles.scrollContainer}
+                                horizontal={false}
+                                showsVerticalScrollIndicator={false}
+                            >
+                                {results.map((roll, index) => (
+                                    <View style={styles.rollContainer} key={index}>
+                                        <Text style={styles.rollText}>
+                                            Roll {index + 1}: {roll}
+                                        </Text>
+                                    </View>
+                                ))}
+                            </ScrollView>
+                        )}
+                    </View>
+                </View>
+        </ImageBackground>
     );
 }
 
@@ -133,7 +136,8 @@ const styles = StyleSheet.create({
     input: {
         flex: 1,
         borderWidth: 1,
-        borderColor: '#ccc',
+        borderColor: '#fff',
+        backgroundColor: '#fff',
         borderRadius: 5,
         padding: 5,
     },
@@ -166,7 +170,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         alignItems: 'flex-start',
-    },
+        backgroundColor: '#fff',
+        margin: 5,
+        borderRadius: 10,
+        opacity: .7,
+        height: 540,
+      },
     scrollContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
@@ -175,6 +184,7 @@ const styles = StyleSheet.create({
     },
     rollContainer: {
         width: '33.33%',
+        flexGrow: 1,
         alignItems: 'center',
         marginVertical: 10,
     },
@@ -192,5 +202,10 @@ const styles = StyleSheet.create({
     headerText: {
         fontWeight: 'bold',
         fontSize: 20,
+    },
+    backgroundImage: {
+        flex: 1,
+        resizeMode: 'cover',
+        justifyContent: 'center',
     },
 });

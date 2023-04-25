@@ -4,15 +4,18 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Alert
+  Alert,
+  ImageBackground
 } from 'react-native';
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useIsFocused } from "@react-navigation/native";
-import { FontAwesome5 } from '@expo/vector-icons'; 
+import { FontAwesome5 } from '@expo/vector-icons';
 
-const nKey ="@MyApp:nKey"
+const nKey = "@MyApp:nKey";
+const image = require('../assets/Background.png');
+//https://www.drivethrurpg.com/product/352522/Worlds-Without-Number-Art-Pack?src=newest Image is royalty free
 
 
 export default function HomeScreen() {
@@ -51,29 +54,31 @@ export default function HomeScreen() {
       const notes = await AsyncStorage.getItem(nKey);
       const parseNotes = JSON.parse(notes)
       setNotes(parseNotes || []);
-    } catch(error) {
+    } catch (error) {
       console.log(error)
     }
   }
 
   return (
-    <ScrollView>
-      {notes.length > 0 ? (
-      notes.map((note, index) => (
-        <View key={index} style={styles.notesContainer}>
-  <Text style={styles.noteHeader}>{note.type} Note: </Text>
-  <Text style={styles.content}>{'\t'}{note.content}</Text>
-  <TouchableOpacity onPress={() => deleteNote(index)} styles={styles.deleteButton}>
-    <FontAwesome5 name="ban" style={styles.deleteIcon}/>
-  </TouchableOpacity>
-</View>
-      ))
-    ) : (
-      <View>
-        <Text>No notes found</Text>
-      </View>
-    )}
-    </ScrollView>
+    <ImageBackground source={image} style={styles.backgroundImage}>
+      <ScrollView>
+        {notes.length > 0 ? (
+          notes.map((note, index) => (
+            <View key={index} style={styles.notesContainer}>
+              <Text style={styles.noteHeader}>{note.type} Note: </Text>
+              <Text style={styles.content}>{'\t'}{note.content}</Text>
+              <TouchableOpacity onPress={() => deleteNote(index)} styles={styles.deleteButton}>
+                <FontAwesome5 name="ban" style={styles.deleteIcon} />
+              </TouchableOpacity>
+            </View>
+          ))
+        ) : (
+          <View style={styles.notesContainer}>
+            <Text style={styles.content}>No notes found</Text>
+          </View>
+        )}
+      </ScrollView>
+    </ImageBackground>
   );
 }
 
@@ -83,10 +88,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#tomato',
   },
-notesContainer: {
-  backgroundColor: '#fff',
+  notesContainer: {
+    backgroundColor: '#fff',
     borderRadius: 10,
     padding: 10,
     marginVertical: 5,
@@ -100,7 +104,7 @@ notesContainer: {
 
     elevation: 5,
   },
-  noteHeader: { 
+  noteHeader: {
     textAlign: 'center',
     fontSize: 18,
   },
@@ -127,5 +131,10 @@ notesContainer: {
     bottom: 0,
     color: 'red',
     alignSelf: 'flex-end',
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
   },
 });

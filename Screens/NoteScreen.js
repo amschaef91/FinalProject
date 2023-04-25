@@ -5,16 +5,20 @@ import {
     Text,
     View,
     Keyboard,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    ImageBackground
 } from 'react-native';
 import { useState } from "react";
 import { TextInput } from 'react-native-gesture-handler';
 import DropDownPicker from 'react-native-dropdown-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const nKey ="@MyApp:nKey"
+const image = require('../assets/Background.png');
+//https://www.drivethrurpg.com/product/352522/Worlds-Without-Number-Art-Pack?src=newest Image is royalty free
+
+const nKey = "@MyApp:nKey"
 export default function NoteScreen({ navigation }) {
-    
+
     const [type, setType] = useState([{
         label: 'Character', value: 'Character'
     },
@@ -24,106 +28,116 @@ export default function NoteScreen({ navigation }) {
     const [value, setValue] = useState('');
     const [noteText, setNoteText] = useState('');
     const [note, setNote] = useState({ type: '', content: '' });
-    const [message, setMessage] = useState("");
-    
+
     const saveNote = async (value, noteText) => {
         if (value && noteText) {
-          const newNote = { type: value, content: noteText };
-          try {
-            const notes = await AsyncStorage.getItem(nKey);
-            let parsedNotes = JSON.parse(notes) || [];
-            const updatedNotes = Array.isArray(parsedNotes) ? [...parsedNotes, newNote] : [newNote];
-            await AsyncStorage.setItem(nKey, JSON.stringify(updatedNotes));
-            navigation.goBack();
-            setValue("");
-            setMessage("");
-          } catch (error) {
-            console.log(error);
-            setMessage("An error occurred while saving the note");
-          }
+            const newNote = { type: value, content: noteText };
+            try {
+                const notes = await AsyncStorage.getItem(nKey);
+                let parsedNotes = JSON.parse(notes) || [];
+                const updatedNotes = Array.isArray(parsedNotes) ? [...parsedNotes, newNote] : [newNote];
+                await AsyncStorage.setItem(nKey, JSON.stringify(updatedNotes));
+                navigation.goBack();
+                setValue("");
+                setMessage("");
+            } catch (error) {
+                console.log(error);
+                alert("An error occurred while saving the note");
+            }
         } else {
-          setMessage("Type and Text cannot be null");
+            alert("Type and Text must have input");
         }
-      };
+    };
 
 
     return (
-        <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
-        <View style={styles.container}>
-            <View style={styles.row}>
-                <View style={styles.picker}>
-                <DropDownPicker
-                    open={open}
-                    value={value}
-                    items={type}
-                    setOpen={setOpen}
-                    setValue={setValue}
-                    setItems={setType}
-                    placeholder='Note Type'
-                />
+        <ImageBackground source={image} style={styles.backgroundImage}>
+            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                <View style={styles.container}>
+                    <View style={styles.row}>
+                        <View style={styles.picker}>
+                            <DropDownPicker
+                                open={open}
+                                value={value}
+                                items={type}
+                                setOpen={setOpen}
+                                setValue={setValue}
+                                setItems={setType}
+                                placeholder='Note Type'
+                            />
+                        </View>
+                        <View style={styles.buttonContainer}>
+                            <Pressable style={styles.button} onPress={() => { saveNote(value, noteText); setNoteText(""); }}>
+                                <Text style={styles.buttonText}>Save Note
+                                </Text>
+                            </Pressable>
+                        </View>
+                    </View>
+
+                    <View style={styles.inputContainer}>
+                        <TextInput style={styles.textInput}
+                            onChangeText={text => setNoteText(text)}
+                            placeholder='Write your note'
+                            multiline={true}
+                            value={noteText}>
+
+                        </TextInput>
+                    </View>
                 </View>
-                <View style={styles.buttonContainer}>
-                <Pressable style={styles.button} onPress={() => {saveNote(value, noteText); setNoteText("");}}>
-                    <Text style={styles.buttonText}>Save Note
-                    </Text>
-                </Pressable>
-                </View>
-            </View>
-            
-            <View>
-                <TextInput style={styles.textInput}
-                    onChangeText={text => setNoteText(text)}
-                    placeholder='Write your note'
-                    multiline={true}
-                    value={noteText}>
-                    
-                </TextInput>
-            </View>
-            <Text style={styles.warning}>{message}</Text>
-        </View>
-        </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback>
+        </ImageBackground>
     );
 }
 const styles = StyleSheet.create({
     container: {
-        alignItems: 'center',
-        justifyContent: 'center',
+        flex: 1,
         backgroundColor: '#tomato',
+        padding: 10,
     },
     row: {
         flexDirection: 'row',
         alignItems: 'flex-start',
+        justifyContent: 'space-between',
+        marginBottom: 10,
         zIndex: 100,
-        paddingTop: 70,
     },
     picker: {
         flex: 1,
-        zIndex: 100,
-    },
-    textInput: {
-        fontSize: 24,
-        marginTop: 50,
-        flex: 3
+        marginRight: 5,
     },
     button: {
-    flex: 1,
-    justifyContent: 'center',
-    width: '100%',
-    backgroundColor: 'blue',
-    borderRadius: 5,
-    },
-    buttonContainer: {
-
+        width: 100,
+        height: 50,
+        borderRadius: 10,
+        backgroundColor: 'blue',
     },
     buttonText: {
         color: 'white',
+        fontSize: 16,
+        padding: 12,
+    },
+    inputContainer: {
+        flex: 1,
+        marginTop: 30,
+    },
+    textInput: {
+        textAlign: 'center',
+        flex: 1,
         fontSize: 24,
-        padding: 10,
+        backgroundColor: '#fff',
+        paddingHorizontal: 10,
+        borderRadius: 10,
+        opacity: .7
     },
     warning: {
         position: 'absolute',
         top: 70,
+        alignSelf: 'center',
         color: 'red',
         fontSize: 16,
-    }
+    },
+    backgroundImage: {
+        flex: 1,
+        resizeMode: 'cover',
+    },
 });
