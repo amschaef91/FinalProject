@@ -7,7 +7,8 @@ import HomeScreen from './Screens/HomeScreen';
 import DiceScreen from './Screens/DiceScreen';
 import NoteScreen from './Screens/NoteScreen';
 import { FontAwesome5 } from '@expo/vector-icons';
-
+import { useEffect } from 'react';
+import { createDB } from './Database/Database';
 
 SplashScreen.preventAutoHideAsync();
 setTimeout(SplashScreen.hideAsync, 2000);
@@ -18,6 +19,10 @@ const image = require('./assets/Background.png');
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+  useEffect(()=>{
+    createDB();
+  });
+
   return (
     <NavigationContainer>
       <Tab.Navigator

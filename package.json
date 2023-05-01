@@ -14,13 +14,15 @@
     "@react-navigation/native": "^6.1.6",
     "expo": "~48.0.11",
     "expo-splash-screen": "~0.18.1",
+    "expo-sqlite": "~11.1.1",
     "expo-status-bar": "~1.4.4",
+    "expo-updates": "~0.16.4",
     "react": "18.2.0",
     "react-native": "0.71.6",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-gesture-handler": "~2.9.0",
     "react-native-navigation": "^7.33.0-alpha.3",
-    "expo-updates": "~0.16.4"
+    "expo-web-browser": "~12.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

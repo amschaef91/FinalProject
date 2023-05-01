@@ -11,13 +11,13 @@ import {
 import { useState } from "react";
 import { TextInput } from 'react-native-gesture-handler';
 import DropDownPicker from 'react-native-dropdown-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Add } from '../Database/Database';
 
 const image = require('../assets/Background.png');
 //https://www.drivethrurpg.com/product/352522/Worlds-Without-Number-Art-Pack?src=newest Image is royalty free
 
-const nKey = "@MyApp:nKey"
-export default function NoteScreen({ navigation }) {
+
+export default function NoteScreen() {
 
     const [type, setType] = useState([{
         label: 'Character', value: 'Character'
@@ -27,28 +27,17 @@ export default function NoteScreen({ navigation }) {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState('');
     const [noteText, setNoteText] = useState('');
-    const [note, setNote] = useState({ type: '', content: '' });
 
-    const saveNote = async (value, noteText) => {
-        if (value && noteText) {
-            const newNote = { type: value, content: noteText };
-            try {
-                const notes = await AsyncStorage.getItem(nKey);
-                let parsedNotes = JSON.parse(notes) || [];
-                const updatedNotes = Array.isArray(parsedNotes) ? [...parsedNotes, newNote] : [newNote];
-                await AsyncStorage.setItem(nKey, JSON.stringify(updatedNotes));
-                navigation.goBack();
-                setValue("");
-                setMessage("");
-            } catch (error) {
-                console.log(error);
-                alert("An error occurred while saving the note");
-            }
-        } else {
-            alert("Type and Text must have input");
+    function handleAdd(value, noteText){
+        if(value.length === 0 || noteText.length === 0 || value === null || noteText === null
+            || value.trim().length === 0 || noteText.trim().length === 0){
+            alert("Type and text cannot be empty")
+        }else{
+            Add(value, noteText);
+            setValue("");
+            setNoteText("");
         }
-    };
-
+    }
 
     return (
         <ImageBackground source={image} style={styles.backgroundImage}>
@@ -67,7 +56,7 @@ export default function NoteScreen({ navigation }) {
                             />
                         </View>
                         <View style={styles.buttonContainer}>
-                            <Pressable style={styles.button} onPress={() => { saveNote(value, noteText); setNoteText(""); }}>
+                            <Pressable style={styles.button} onPress={() => { handleAdd(value, noteText); setNoteText(""); }}>
                                 <Text style={styles.buttonText}>Save Note
                                 </Text>
                             </Pressable>
